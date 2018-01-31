@@ -21,17 +21,17 @@ client.set("ADMIN_PW", admin_password, redis.print);
 console.info(admin_password);
 
 // To check the admin password
-function check_admin_pomise(given_pw){
+function check_admin_promise(given_pw){
   var promise = new Promise(function(resolve, reject){
     client.get("ADMIN_PW", function (err, reply){
       if (err){
-        reject (err);
+        reject(err);
       }
       if (given_pw && (given_pw === reply.toString())){
         resolve(true);
       }
       else{
-        reject (false);
+        reject(false);
       }
     })
   });
@@ -59,7 +59,7 @@ app.post("/post/services", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_pomise(req.body.admin_password).then(post_service).catch(handle_reject);
+    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject);
 });
 
 // new auth proxy
@@ -76,7 +76,7 @@ app.post("/post/auth", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_pomise(req.body.admin_password).then(post_auth).catch(handle_reject);
+    check_admin_promise(req.body.admin_password).then(post_auth).catch(handle_reject);
 
 });
 
@@ -94,7 +94,7 @@ app.post("/post/variable", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_pomise(req.body.admin_password).then(post_service).catch(handle_reject);
+    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject);
 });
 
 // list of services
