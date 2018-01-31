@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+const fs = require('fs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -18,7 +19,8 @@ client.auth('password', function (err) {
 // admin password
 let admin_password = crypto.randomBytes(10).toString('hex');
 client.set("ADMIN_PW", admin_password, redis.print);
-console.info(admin_password);
+console.log(admin_password);
+fs.writeFileSync('dh_pw.out', admin_password);
 
 // To check the admin password
 function check_admin_promise(given_pw){
