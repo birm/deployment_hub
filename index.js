@@ -10,7 +10,9 @@ var db = new sqlite3.Database('deploymenthub.sq3')
 function sq3_init(){
     db.run('CREATE TABLE IF NOT EXISTS variables (name TEXT PRIMARY KEY, value TEXT);');
     db.run('CREATE TABLE IF NOT EXISTS services (host TEXT NOT NULL, service TEXT NOT NULL);');
-    db.run('CREATE TABLE IF NOT EXISTS proxy (id PRIMARY KEY, pubkey TEXT);');
+    db.run('CREATE TABLE IF NOT EXISTS proxy (id TEXT PRIMARY KEY, pubkey TEXT);');
+    'CREATE UNIQUE INDEX idx_var ON variables (name);'
+    'CREATE UNIQUE INDEX idx_proxy ON proxy (id);'
 }
 sq3_init();
 
@@ -33,7 +35,7 @@ app.post("/new/auth", function(req, res){
     req.body.pubkey
     // TODO randomly generate an ID
     let id = crypto.randomBytes(5).toString('hex');
-    let stmt = db.prepare('insert into auth values (?, ?);');
+    let stmt = db.prepare('insert into proxy values (?, ?);');
     // TODO handle failure "existing key" by trying again
     stmt.run([id, req.body.pubkey]);
     stmt.finalize();
@@ -61,7 +63,7 @@ app.post("/update/services", function(req, res){
 app.post("/update/auth", function(req, res){
     req.body.host
     req.body.pubkey
-    let stmt = db.prepare('replace into auth values (?, ?);');
+    let stmt = db.prepare('replace into proxy values (?, ?);');
     // TODO handle failure "existing key" by trying again
     stmt.run([id, req.body.pubkey]);
     stmt.finalize();
