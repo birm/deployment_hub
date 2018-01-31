@@ -110,6 +110,18 @@ app.get("/get/services/all", function(req, res){
       }
     });
 });
+
+// list of services
+app.get("/get/services/one/:service", function(req, res){
+    client.smembers("SERVICES_" + req.params.service, function(err, rsp){
+      if(err){
+        res.send(500);
+      } else {
+        res.json(rsp);
+      }
+    });
+});
+
 // pub key for auth proxy given id
 app.get("/get/key/:id", function(req, res){
     req.params.id
