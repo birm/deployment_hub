@@ -59,7 +59,7 @@ app.post("/post/services", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_pomise(req.body.admin_password).then(post_service, handle_reject);
+    check_admin_pomise(req.body.admin_password).then(post_service).catch(handle_reject);
 });
 
 // new auth proxy
@@ -76,7 +76,7 @@ app.post("/post/auth", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_pomise(req.body.admin_password).then(post_auth, handle_reject);
+    check_admin_pomise(req.body.admin_password).then(post_auth).catch(handle_reject);
 
 });
 
@@ -94,7 +94,7 @@ app.post("/post/variable", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_pomise(req.body.admin_password).then(post_service, handle_reject);
+    check_admin_pomise(req.body.admin_password).then(post_service).catch(handle_reject);
 });
 
 // list of services
