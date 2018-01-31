@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 
+// to generate random ids
+var crypto = require("crypto");
+
 var sqlite3 = require('sqlite3').verbose()
 var db = new sqlite3.Database('deploymenthub.sq3')
 // create tables if they don't exist
@@ -29,7 +32,7 @@ app.post("/new/auth", function(req, res){
     req.body.host
     req.body.pubkey
     // TODO randomly generate an ID
-    let id = "";
+    let id = crypto.randomBytes(5).toString('hex');
     let stmt = db.prepare('insert into services values (?, ?)');
     // TODO handle failure "existing key" by trying again
     stmt.run([id, req.body.pubkey]);
