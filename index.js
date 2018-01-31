@@ -40,7 +40,7 @@ function check_admin_promise(given_pw){
 
 function handle_reject(res){
   return function(){
-    res.send(401);
+    res.sendStatus(401);
   }
 
 }
@@ -54,10 +54,10 @@ app.post("/post/services", function(req, res){
     var post_service = function(x){
       client.sadd("SERVICES_" + req.body.service, req.body.host, function (err, rep){
         if (err){
-          res.send(500);
+          res.sendStatus(500);
         } else {
           client.sadd("SERVICE_SET", req.body.service);
-          res.send(200);
+          res.sendStatus(200);
           // TODO make actual result
         }
       })
@@ -72,9 +72,9 @@ app.post("/post/auth", function(req, res){
       let id = crypto.randomBytes(5).toString('hex');
       client.set("AUTH_" + id, req.body.pubkey, function (err, rep){
         if (err){
-          res.send(500);
+          res.sendStatus(500);
         } else {
-          res.send(200);
+          res.sendStatus(200);
           // TODO make actual result
         }
       })
@@ -90,9 +90,9 @@ app.post("/post/variable", function(req, res){
     var post_var = function(x){
       client.set("VARS_" + req.body.name, req.body.variable, function (err, rep){
         if (err){
-          res.send(500);
+          res.sendStatus(500);
         } else {
-          res.send(200);
+          res.sendStatus(200);
           // TODO make actual result
         }
       })
@@ -104,7 +104,7 @@ app.post("/post/variable", function(req, res){
 app.get("/get/services/all", function(req, res){
     client.smembers("SERVICE_SET", function(err, rsp){
       if(err){
-        res.send(500);
+        res.sendStatus(500);
       } else {
         res.json(rsp);
       }
@@ -115,7 +115,7 @@ app.get("/get/services/all", function(req, res){
 app.get("/get/services/one/:service", function(req, res){
     client.smembers("SERVICES_" + req.params.service, function(err, rsp){
       if(err){
-        res.send(500);
+        res.sendStatus(500);
       } else {
         res.json(rsp);
       }
@@ -127,7 +127,7 @@ app.get("/get/key/:id", function(req, res){
     req.params.id
     client.get("AUTH_" + req.params.id, function(err, rsp){
       if(err){
-        res.send(500);
+        res.sendStatus(500);
       } else {
         res.json(rsp);
       }
@@ -137,7 +137,7 @@ app.get("/get/key/:id", function(req, res){
 app.get("/get/variables/one/:name", function(req, res){
   client.get("VARS_" + req.params.id, function(err, rsp){
     if(err){
-      res.send(500);
+      res.sendStatus(500);
     } else {
       res.json(rsp);
     }
