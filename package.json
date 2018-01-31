@@ -1,0 +1,27 @@
+{
+  "name": "deployment_hub",
+  "version": "1.0.0",
+  "description": "Deployment Info Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "test test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/birm/deployment_hub.git"
+  },
+  "keywords": [
+    "deployment",
+    "hub"
+  ],
+  "author": "birm@rbirm.us",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/birm/deployment_hub/issues"
+  },
+  "homepage": "https://github.com/birm/deployment_hub#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "sqlite3": "^3.1.13"
+  }
+}
