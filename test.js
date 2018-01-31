@@ -33,6 +33,7 @@ describe ("POST Methods", function(){
     }
     var response = chakram.get(`${host}:${port}/post/auth`, body);
     expect(response).to.have.status(200);
+    // TODO we need to keep track of returned id in auth_node_id for get test
   }
   it("Should be able to post a variable", function(){
     var body = {
@@ -44,9 +45,12 @@ describe ("POST Methods", function(){
     expect(response).to.have.status(200);
   }
 });
+// TODO finish
+/**
 describe ("GET Methods", function(){
   var response = chakram.get(`${host}:${port}/get/services/all`);
   var response = chakram.get(`${host}:${port}/get/services/one/:service`);
   var response = chakram.get(`${host}:${port}/get/key/:id`);
   var response = chakram.get(`${host}:${port}/get/variables/one/:name`);
 });
+**/
