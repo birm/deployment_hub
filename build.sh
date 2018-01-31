@@ -20,7 +20,8 @@ update-rc.d redis_6379 defaults
 /etc/init.d/redis_6379 start
 # install npm, node
 apt-get --yes --force-yes install npm
-apt-get --yes --force-yes install node
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+apt-get install -y nodejs
 npm install
 # host app
-node index.js &&
+nodejs index.js &&
