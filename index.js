@@ -4,93 +4,125 @@ var app = express();
 // to generate random ids
 var crypto = require("crypto");
 
-var sqlite3 = require('sqlite3').verbose()
-var db = new sqlite3.Database('deploymenthub.sq3')
-// create tables if they don't exist
-function sq3_init(){
-    db.run('CREATE TABLE IF NOT EXISTS variables (name TEXT PRIMARY KEY, value TEXT);');
-    db.run('CREATE TABLE IF NOT EXISTS services (host TEXT NOT NULL, service TEXT NOT NULL);');
-    db.run('CREATE TABLE IF NOT EXISTS proxy (id TEXT PRIMARY KEY, pubkey TEXT);');
-    'CREATE UNIQUE INDEX idx_var ON variables (name);'
-    'CREATE UNIQUE INDEX idx_proxy ON proxy (id);'
-}
-sq3_init();
+var redis = require('redis');
+var client = redis.createClient(6379, 'localhost', {no_ready_check: true});
+client.auth('password', function (err) {
+    if (err) throw err;
+});
 
-// BIG TODO
-// handle database errors with return codes
+// admin password
+let admin_password = crypto.randomBytes(10).toString('hex');
+client.set("ADMIN_PW", admin_password, redis.print);
+console.info(admin_password);
+
+// To check the admin password
+function check_admin_pomise(given_pw){
+  var promise = new Promise(function(resolve, reject){
+    client.get("ADMIN_PW", function (err, reply){
+      if (err){
+        reject (err);
+      }
+      if (given_pw && (given_pw === reply.toString())){
+        resolve(true);
+      }
+      else{
+        reject (false);
+      }
+    })
+  });
+  return promise
+}
+
+function handle_reject(){
+  res.send(401);
+}
 
 // ENDPOINTS
 
 // new service server registry
-app.post("/new/services", function(req, res){
-    let stmt = db.prepare('insert into services values (?, ?);');
-    for (let service in req.body.services){
-        stmt.run([req.body.host, services[service]]);
-    }
-    stmt.finalize();
-});
-// new auth proxy
-app.post("/new/auth", function(req, res){
+app.post("/post/services", function(req, res){
+    req.body.service
     req.body.host
-    req.body.pubkey
-    // TODO randomly generate an ID
-    let id = crypto.randomBytes(5).toString('hex');
-    let stmt = db.prepare('insert into proxy values (?, ?);');
-    // TODO handle failure "existing key" by trying again
-    stmt.run([id, req.body.pubkey]);
-    stmt.finalize();
-    // TODO return the id
-});
-// new deployment variable
-app.post("/new/variable", function(req, res){
-    let stmt = db.prepare('insert into variables values (?, ?);');
-    stmt.run([req.body.name, req.body.variable]);
-    stmt.finalize();
+    var post_service = function(x){
+      client.sadd("SERVICES_" + req.body.service, req.body.host, function (err, rep){
+        if (err){
+          res.send(500);
+        } else {
+          client.sadd("SERVICE_SET", req.body.service);
+          res.send(200);
+          // TODO make actual result
+        }
+      })
+    }.bind(this);
+    check_admin_pomise(req.body.admin_password).then(post_service, handle_reject);
 });
 
-// new service server registry
-app.post("/update/services", function(req, res){
-    db.run('begin transaction;');
-    db.run('delete from services where host = ?;',[req.body.host] )
-    let stmt = db.prepare('insert into services values (?, ?);');
-    for (let service in req.body.services){
-        stmt.run([req.body.host, services[service]]);
-    }
-    db.run('commit;');
-    stmt.finalize();
-});
 // new auth proxy
-app.post("/update/auth", function(req, res){
-    req.body.host
+app.post("/post/auth", function(req, res){
     req.body.pubkey
-    let stmt = db.prepare('replace into proxy values (?, ?);');
-    // TODO handle failure "existing key" by trying again
-    stmt.run([id, req.body.pubkey]);
-    stmt.finalize();
-    // TODO return the id
+    var post_auth = function(x){
+      let id = crypto.randomBytes(5).toString('hex');
+      client.set("AUTH_" + id, req.body.pubkey, function (err, rep){
+        if (err){
+          res.send(500);
+        } else {
+          res.send(200);
+          // TODO make actual result
+        }
+      })
+    }.bind(this);
+    check_admin_pomise(req.body.admin_password).then(post_auth, handle_reject);
+
 });
+
 // new deployment variable
-app.post("/update/variable", function(req, res){
-    let stmt = db.prepare('replace into variables values (?, ?);');
-    stmt.run([req.body.name, req.body.variable]);
-    stmt.finalize();
+app.post("/post/variable", function(req, res){
+    req.body.name
+    req.body.variable
+    var post_var = function(x){
+      client.set("VARS_" + req.body.name, req.body.variable, function (err, rep){
+        if (err){
+          res.send(500);
+        } else {
+          res.send(200);
+          // TODO make actual result
+        }
+      })
+    }.bind(this);
+    check_admin_pomise(req.body.admin_password).then(post_service, handle_reject);
 });
 
 // list of services
-app.get("/get/services", function(req, res){
-    db.all('select * from services;', (err,rows) => (res.json(rows)));
+app.get("/get/services/all", function(req, res){
+    client.smembers("SERVICE_SET", function(err, rsp){
+      if(err){
+        res.send(500);
+      } else {
+        res.json(rsp);
+      }
+    });
+  )
 });
 // pub key for auth proxy given id
 app.get("/get/key/:id", function(req, res){
-    db.get('select * from services where id = ?;', [req.params.id], (err,row) => (res.json(row)));
+    req.params.id
+    client.get("AUTH_" + req.params.id, function(err, rsp){
+      if(err){
+        res.send(500);
+      } else {
+        res.json(rsp);
+      }
+    });
 });
 // get deployment variable
 app.get("/get/variables/one/:name", function(req, res){
-    db.get('select * from variables where name = ?;', [req.params.name], (err,row) => (res.json(row)));
-});
-// get deployment variables
-app.get("/get/variables", function(req, res){
-    db.all('select * from variables;', (err,rows) => (res.json(rows)));
+  client.get("VARS_" + req.params.id, function(err, rsp){
+    if(err){
+      res.send(500);
+    } else {
+      res.json(rsp);
+    }
+  });
 });
 
 
