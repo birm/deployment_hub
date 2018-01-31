@@ -23,6 +23,6 @@
   "dependencies": {
     "crypto": "^1.0.1",
     "express": "^4.16.2",
-    "sqlite3": "^3.1.13"
+    "redis": "^2.8.0"
   }
 }
