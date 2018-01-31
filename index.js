@@ -38,8 +38,11 @@ function check_admin_promise(given_pw){
   return promise
 }
 
-function handle_reject(){
-  res.send(401);
+function handle_reject(res){
+  return function(){
+    res.send(401);
+  }
+
 }
 
 // ENDPOINTS
@@ -59,7 +62,7 @@ app.post("/post/services", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject);
+    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject(res));
 });
 
 // new auth proxy
@@ -76,7 +79,7 @@ app.post("/post/auth", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_auth).catch(handle_reject);
+    check_admin_promise(req.body.admin_password).then(post_auth).catch(handle_reject(res));
 
 });
 
@@ -94,7 +97,7 @@ app.post("/post/variable", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject);
+    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject(res));
 });
 
 // list of services
