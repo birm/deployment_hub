@@ -101,7 +101,6 @@ app.get("/get/services/all", function(req, res){
         res.json(rsp);
       }
     });
-  )
 });
 // pub key for auth proxy given id
 app.get("/get/key/:id", function(req, res){
