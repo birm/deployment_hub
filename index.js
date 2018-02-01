@@ -72,7 +72,7 @@ app.post("/post/services", function(req, res){
 app.post("/post/auth", function(req, res){
     req.body.pubkey
     var post_auth = function(x){
-      let id = crypto.randomBytes(5).toString('hex');
+      var id = crypto.randomBytes(5).toString('hex');
       client.set("AUTH_" + id, req.body.pubkey, function (err, rep){
         if (err){
           res.sendStatus(500);
