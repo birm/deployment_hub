@@ -78,7 +78,7 @@ app.post("/post/auth", function(req, res){
           res.sendStatus(500);
         } else {
           res.sendStatus(200);
-          // TODO make actual result
+          res.send(id)
         }
       })
     }.bind(this);
@@ -96,7 +96,7 @@ app.post("/post/variable", function(req, res){
           res.sendStatus(500);
         } else {
           res.sendStatus(200);
-          // TODO make actual result
+          res.json({name: req.body.name, variable: req.body.variable})
         }
       })
     }.bind(this);
@@ -132,17 +132,21 @@ app.get("/get/key/:id", function(req, res){
       if(err){
         res.sendStatus(500);
       } else {
-        res.json(rsp);
+        if (rsp){
+          res.json({id: req.params.id, key: rsp});
+        } else {
+          res.sendStatus(404);
+        }
       }
     });
 });
 // get deployment variable
 app.get("/get/variables/one/:name", function(req, res){
-  client.get("VARS_" + req.params.id, function(err, rsp){
+  client.get("VARS_" + req.params.name, function(err, rsp){
     if(err){
       res.sendStatus(500);
     } else {
-      res.json(rsp);
+      res.json({name: req.params.name, variable: rsp});
     }
   });
 });
