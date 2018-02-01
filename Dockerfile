@@ -1,7 +1,11 @@
 FROM redis
-ARG hub_pw
 # build the container
-ADD . / ./
+
+WORKDIR "/app"
+
+COPY package*.json ./
+COPY . .
+
 # install npm, node
 RUN apt-get update
 RUN apt-get install curl sudo --yes --force-yes
@@ -9,4 +13,4 @@ RUN apt-get --yes --force-yes install npm
 
 RUN npm install
 # host app
-ENTRYPOINT bash host.sh $hub_pw
+ENTRYPOINT bash /app/host.sh $hub_pw
