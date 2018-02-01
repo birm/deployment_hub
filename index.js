@@ -30,7 +30,7 @@ function check_admin_promise(given_pw){
       if (err){
         reject(err);
       }
-      if (given_pw && (given_pw === reply.toString())){
+      if (given_pw && (given_pw === reply)){
         resolve(true);
       }
       else{
