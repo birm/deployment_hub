@@ -9,4 +9,4 @@ RUN apt-get --yes --force-yes install npm
 
 RUN npm install
 # host app
-CMD [ "nodejs", "index.js", $hub_pw]
+ENTRYPOINT bash host.sh $hub_pw
