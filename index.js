@@ -16,11 +16,12 @@ client.auth('password', function (err) {
     if (err) throw err;
 });
 
-// admin password
-let admin_password = crypto.randomBytes(10).toString('hex');
-client.set("ADMIN_PW", admin_password, redis.print);
-console.log(admin_password);
-fs.writeFileSync('dh_pw.out', admin_password);
+if (process.argv.length < 3) {
+    console.log("Usage: " + __filename + " HUB_PASSWORD");
+    process.exit(-1);
+} else {
+    var admin_password = process.argv[2];
+}
 
 // To check the admin password
 function check_admin_promise(given_pw){
