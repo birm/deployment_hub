@@ -99,7 +99,7 @@ app.post("/post/variable", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject(res));
+    check_admin_promise(req.body.admin_password).then(post_var).catch(handle_reject(res));
 });
 
 // list of services
