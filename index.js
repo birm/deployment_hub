@@ -75,7 +75,7 @@ app.post("/post/auth", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_auth).catch((x)=> (res.send(x));
+    check_admin_promise(req.body.admin_password).then(post_auth).catch((x)=> (res.send(x)));
 
 });
 
@@ -93,7 +93,7 @@ app.post("/post/variable", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_var).catch((x)=> (res.send(x));
+    check_admin_promise(req.body.admin_password).then(post_var).catch((x)=> (res.send(x)));
 });
 
 // list of services
