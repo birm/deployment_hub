@@ -58,7 +58,7 @@ app.post("/post/services", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_service).catch((x)=> (res.send(x));
+    check_admin_promise(req.body.admin_password).then(post_service).catch((x)=> (res.send(x)));
 });
 
 // new auth proxy
