@@ -70,7 +70,6 @@ app.post("/post/auth", function(req, res){
         if (err){
           res.sendStatus(500);
         } else {
-          res.sendStatus(200);
           res.send(id)
         }
       })
@@ -88,7 +87,6 @@ app.post("/post/variable", function(req, res){
         if (err){
           res.sendStatus(500);
         } else {
-          res.sendStatus(200);
           res.json({name: req.body.name, variable: req.body.variable})
         }
       })
