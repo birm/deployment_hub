@@ -41,13 +41,6 @@ function check_admin_promise(given_pw){
   return promise
 }
 
-function handle_reject(res){
-  return function(){
-    res.sendStatus(401);
-  }
-
-}
-
 // ENDPOINTS
 
 // new service server registry
@@ -65,7 +58,7 @@ app.post("/post/services", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_service).catch(handle_reject(res));
+    check_admin_promise(req.body.admin_password).then(post_service).catch((x)=> (res.send(x));
 });
 
 // new auth proxy
@@ -82,7 +75,7 @@ app.post("/post/auth", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_auth).catch(handle_reject(res));
+    check_admin_promise(req.body.admin_password).then(post_auth).catch((x)=> (res.send(x));
 
 });
 
@@ -100,7 +93,7 @@ app.post("/post/variable", function(req, res){
         }
       })
     }.bind(this);
-    check_admin_promise(req.body.admin_password).then(post_var).catch(handle_reject(res));
+    check_admin_promise(req.body.admin_password).then(post_var).catch((x)=> (res.send(x));
 });
 
 // list of services
