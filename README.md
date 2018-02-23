@@ -1,5 +1,5 @@
-# deployment_hub
-Deployment Info Server
+# Ensign Registry
+Registry server node for ensign, to be used with ensign gateway.
 
 On run, it outputs a admin password required to add variables, auth proxy keys, or services
 
